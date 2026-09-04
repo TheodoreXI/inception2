@@ -1,3 +1,15 @@
 FROM debian:12
 
+RUN apt-get update && apt-get install -y php-fpm php-mysql mariadb-client curl \
+    && curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x /usr/local/bin/wp \
+    && mkdir -p /srv/www/wordpress /run/php \
+    && wp core download --path=/srv/www/wordpress --allow-root \
+    && sed -i 's|^listen = .*|listen = 9000|' /etc/php/8.2/fpm/pool.d/www.conf
+
+COPY conf/init.sh /usr/local/bin/init.sh
+RUN chmod +x /usr/local/bin/init.sh
+
+ENTRYPOINT ["init.sh"]
+
 
