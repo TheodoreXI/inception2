@@ -1,14 +1,14 @@
 #!/bin/bash
 set -eu
 
-DB_PASSWORD=$(tr -d '\r\n' < /run/secrets/db_passowrd)
+DB_PASSWORD=$(tr -d '\r\n' < /run/secrets/db_password)
 DB_ROOT_PASSWORD=$(tr -d '\r\n' < /run/secrets/db_root_password)
 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql >/dev/null
     mysqld_safe --skip-networking --datadir=/var/lib/mysql &
 
-    until mysqladming ping --silent 2>/dev/null; do
+    until mysqladmin ping --silent 2>/dev/null; do
         sleep 1
     done 
 

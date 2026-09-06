@@ -7,5 +7,6 @@ RUN apt-get update && apt-get install -y nginx openssl \
     -subj "/C=MA/ST=Maroc/L=AGADIR/O=42/CN=aakroud.42.fr"
 
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
-RUN chmod +x 
+
+ENTRYPOINT ["nginx", "-g", "deamon off;"]
 

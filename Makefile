@@ -32,7 +32,7 @@ clean: down
 
 # clean + wipe the actual data on disk (irreversible)
 fclean: clean
-	docker volume rm -f mariadb_data wordpress_data 2>/dev/null || true
+	$(COMPOSE) down -v
 	sudo rm -rf $(DATA_DIR)
 
 re: fclean all

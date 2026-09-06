@@ -52,22 +52,22 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/workspaces/inception2/mariadb'
+      device: '/workspaces/inception2/srcs/mariadb'
 
   wordpress_data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/workspaces/inception2/wordpress'
+      device: '/workspaces/inception2/srcs/wordpress'
 
 secrets:
   db_password:
     file: ../secrets/db_password.txt
   db_root_password:
-    file: ../secrets/db_root_password.txt
+    file: ../secrets/db_root_pass.txt
   credentials:
-    file: ../secrets/credentials
+    file: ../secrets/credentials.txt
 
 
 
