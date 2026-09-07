@@ -1,9 +1,12 @@
 #!/bin/sh
 
-mkdir -p /run/mysqld
-chown -R mysql:mysql /run/mysqld
+set -e
 
-mariadbd --user=mysql &
+mkdir -p /run/mysqld /var/lib/mysql
+chown -R mysql:mysql /run/mysqld /var/lib/mysql
+
+
+mariadbd --user=mysql --bind-address=0.0.0.0 &
 
 until mariadb -e "SELECT 1" 2>/dev/null; do sleep 1; done
 
@@ -18,4 +21,4 @@ EOF
 
 mariadb-admin -p shutdown
 
-exec mariadbd --user=mysql
+exec mariadbd --user=mysql --bind-address=0.0.0.0
