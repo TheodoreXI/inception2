@@ -1,27 +1,21 @@
-#!/bin/bash
-set -eu
+#!/bin/sh
 
-DB_PASSWORD=$(tr -d '\r\n' < /run/secrets/db_password)
-DB_ROOT_PASSWORD=$(tr -d '\r\n' < /run/secrets/db_root_password)
+mkdir -p /run/mysqld
+chown -R mysql:mysql /run/mysqld
 
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    mariadb-install-db --user=mysql --datadir=/var/lib/mysql >/dev/null
-    mysqld_safe --skip-networking --datadir=/var/lib/mysql &
+mariadbd --user=mysql &
 
-    until mysqladmin ping --silent 2>/dev/null; do
-        sleep 1
-    done 
+until mariadb -e "SELECT 1" 2>/dev/null; do sleep 1; done
 
-    mysql -u root <<-EOF
-        CREATE DATABSASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
-        CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
-        GRANT ALL PRIVILIGES on \`${MYSQL_DATABASE}\è.* TO '${MYSQL_USER}'@'%';
-        ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
-        FLUSH PRIVILIGES;
+PASS=$(cat /run/secrets/db_password)
+
+mariadb <<EOF
+    CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\`;
+    CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$PASS';
+    ALTER USER '$MYSQL_USER'@'%' IDENTIFIED BY '$PASS';
+    GRANT ALL PRIVILEGES ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%';
 EOF
 
-    mysqladmin -u root -p"${DB_ROOT_PASSWORD}" shutdown;
+mariadb-admin -p shutdown
 
-fi
-
-exec mariadbd --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0
+exec mariadbd --user=mysql
