@@ -11,6 +11,8 @@ services:
       - 443:443
     depends_on:
       - wordpress
+    volumes:
+      - wordpress_data:/var/www/wordpress
     restart: on-failure
   mariadb:
     container_name: mariadb
@@ -46,7 +48,7 @@ services:
     networks:
       - inception-network
     volumes:
-      - wordpress_data:/var/www/html
+      - wordpress_data:/var/www/wordpress
     restart: on-failure
 
 networks:
@@ -59,14 +61,14 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/${USER}/data/mariadb'
+      device: '/home/${LOGIN}/data/mariadb'
 
   wordpress_data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/${USER}/data/wordpress'
+      device: '/home/${LOGIN}/data/wordpress'
 
 secrets:
   db_password:

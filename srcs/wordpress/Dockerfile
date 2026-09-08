@@ -1,6 +1,6 @@
-FROM debian:12
+FROM debian:bookworm
 
-RUN apt-get update && apt-get install -y php-fpm php-mysql mariadb-client curl \
+RUN apt-get update && apt-get install -y php-fpm php-cli php-mysql mariadb-client curl \
     && curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x /usr/local/bin/wp \
     && mkdir -p /var/www/wordpress /run/php \
@@ -10,4 +10,4 @@ RUN apt-get update && apt-get install -y php-fpm php-mysql mariadb-client curl \
 COPY conf/init.sh /usr/local/bin/init.sh
 RUN chmod +x /usr/local/bin/init.sh
 
-ENTRYPOINT ["init.sh"]
+ENTRYPOINT [ "init.sh" ]

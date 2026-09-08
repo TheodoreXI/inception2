@@ -5,16 +5,14 @@ WP_PATH="/var/www/wordpress"
 cd "$WP_PATH"
 if ! wp core is-installed --allow-root >/dev/null 2>&1; then
     DB_PASS="$(cat /run/secrets/db_password)"
-    ADMIN_PASS="$(cat /run/secrets/credentials)"
-    USER_PASS="$(cat /run/secrets/credentials)"
+    ADMIN_PASS="$(cat /run/secrets/wp_admin_password)"
+    USER_PASS="$(cat /run/secrets/wp_user_password)"
 
-    if [ ! -f "$WP_PATH/wp-config.php" ]; then
-        wp config create --dbname="$MYSQL_DATABASE" --dbuser="$MYSQL_USER" \
-            --dbpass="$DB_PASS" --dbhost="mariadb" --skip-check --allow-root
-    fi
+	wp config create --dbname="$MYSQL_DATABASE" --dbuser="$MYSQL_USER" \
+		--dbpass="$DB_PASS" --dbhost="mariadb" --skip-check --allow-root
 
     while !( wp db check --allow-root 2>/dev/null ); do
-        sleep 2
+        sleep 1
     done
 
     wp core install --url="https://$DOMAIN_NAME" --title="$WP_TITLE" \
@@ -26,5 +24,4 @@ if ! wp core is-installed --allow-root >/dev/null 2>&1; then
 fi
 
 chown -R www-data:www-data "$WP_PATH"
-
 exec php-fpm8.2 -F
