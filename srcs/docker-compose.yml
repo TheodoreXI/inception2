@@ -1,8 +1,8 @@
 services:
   nginx:
     container_name: nginx
-    build: ./nginx
-    image: nginx
+    build: requirements/nginx
+    image: nginx:98
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME}
     networks:
@@ -16,8 +16,8 @@ services:
     restart: on-failure
   mariadb:
     container_name: mariadb
-    build: ./mariadb
-    image: mariadb
+    build: requirements/mariadb
+    image: mariadb:98
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
@@ -31,8 +31,8 @@ services:
     restart: on-failure
   wordpress:
     container_name: wordpress
-    build: ./wordpress
-    image: wordpress
+    build: requirements/wordpress
+    image: wordpress:98
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -45,6 +45,7 @@ services:
     secrets:
       - db_password
       - credentials
+      - credentials_2
     networks:
       - inception-network
     volumes:
@@ -77,4 +78,6 @@ secrets:
     file: ../secrets/db_root_pass.txt
   credentials:
     file: ../secrets/credentials.txt
+  credentials_2:
+    file: ../secrets/credentials_2.txt
     

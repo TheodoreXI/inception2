@@ -1,7 +1,6 @@
 NAME        = inception
 COMPOSE     = docker compose -f srcs/docker-compose.yml
-LOGIN       = $(shell whoami)
-DATA_DIR    = /home/$(LOGIN)/data
+DATA_DIR    = /home/aakroud/data
 
 all: up
 
