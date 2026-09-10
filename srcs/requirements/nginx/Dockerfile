@@ -1,6 +1,5 @@
 FROM debian:12
 
-#the paths of the keys must change
 
 RUN apt-get update && apt-get install -y nginx openssl \
     && openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/nginx-selfsigned.key -out /etc/nginx/nginx-selfsigned.crt \
